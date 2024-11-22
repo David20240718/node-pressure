@@ -1,0 +1,16 @@
+{
+  "Nodes": [
+    {
+      "name": "bp1",
+      "endpoint": "127.0.0.1:8000",
+      "account": "2r896yKhHsoNGhyJVe4ptA169P6LMvsC94BxA7xtrifSHuSdyd",
+      "password": "12345678"
+    }
+  ],
+  "BasicAuth": {
+    "userName" : "aelf",
+    "password": "12345678"
+  },
+  "NativeTokenSymbol": "ELF",
+  "DefaultPassword": "12345678"
+}

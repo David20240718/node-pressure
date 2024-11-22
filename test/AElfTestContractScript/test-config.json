@@ -1,0 +1,22 @@
+{
+  "ServiceUrlList":[
+    "http://34.84.83.209:8000"
+  ],
+  "InitAccount": "2J27Edbut8pk2P5xfMzCfMsp6cGdbCA81TnZSuDKMeaVmbJXv1",
+  "Password": "12345678",
+  "TransactionInfo": {
+    "GroupDuration": 1000,
+    "TransactionCount": 1,
+    "SenderCount": 50,
+    "TransactionSize": 10,
+    "SentTxLimit": 1000000,
+    "TransactionLimit": 60
+  },
+  "IsProxyAccount": false,
+  "IsNeedDelegatee": false,
+  "IsParallel": false,
+  "InitFeeAmount": 1000000000000,
+  "ProxyAccountContract": "",
+  "TestContractAddress": "",
+  "TestDuration": 300
+} 

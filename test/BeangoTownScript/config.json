@@ -1,0 +1,14 @@
+{
+  "UserCount": 1,
+  "TransactionCount": 1,
+  "ServiceUrl": "192.168.66.64:8000",
+  "ConfigFile": "nodes",
+  "main_chain_url": "192.168.67.72:8000",
+  "side_chain_url": "192.168.66.47:8000",
+  "BeangoTownServerUrl": "http://192.168.67.234:5008/api/app/chain/blockHeight",
+  "BeangoTownAddress": "UYdd84gLMsVdHrgkr3ogqe1ukhKwen8oj32Ks4J1dg6KH9PYC",
+  "CAAddressMain": "2LUmicHyH4RXrMjG4beDwuDsiWJESyLkgkwPdGTR8kahRzq5XS",
+  "CAAddressSide": "RXcxgSXuagn8RrvhQAV81Z652EEYSwR6JLnqHYJ5UVpEptW8Y",
+  "CreatorController": "ucxifHkQcqob3zL3c2WppfEQn46oADEmm6bJdHsfNgX8ye2tw",
+  "privateKey": ""
+}

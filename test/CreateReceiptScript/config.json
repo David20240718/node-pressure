@@ -1,0 +1,22 @@
+{
+  "UserCount": 1,
+  "TransactionCount":1,
+  "ServiceUrl": "192.168.66.36:8000",
+  "ConfigFile": "nodes",
+  "ChainType": {
+    "is_side_chain": false,
+    "main_chain_url": "192.168.197.14:8000"
+  },
+  "BridgeInfos": {
+    "Sepolia": {
+      "BridgeAddress": "2u6Dd139bHvZJdZ835XnNKL5y6cxqzV9PEWD5fZdQXdFZLgevc",
+      "TargetChainId": "Sepolia",
+      "TargetAddress": "0x0Dc81F00BF01a891A4D0e4C4dbc17E69966a7411",
+      "SymbolList": [
+        "ELF",
+        "ETH",
+        "USDT"
+      ]
+    }
+  }
+}

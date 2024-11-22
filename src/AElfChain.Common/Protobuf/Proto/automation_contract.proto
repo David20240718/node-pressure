@@ -1,0 +1,128 @@
+// the version of the language, use proto3 for contracts
+syntax = "proto3";
+
+package automation;
+
+// some core imports for AElf chain types
+import "aelf/core.proto";
+import "aelf/options.proto";
+import "acs12.proto";
+
+// import for using the google.protobuf.* type.
+import "google/protobuf/empty.proto";
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/timestamp.proto";
+
+// the name of the C# namespace in which the contract code will be,
+// generated code will also be in this namespace.
+option csharp_namespace = "AetherLink.Contracts.Automation";
+
+// the contract definition: a gRPC service definition.
+service AutomationContract {
+    option (aelf.base) = "acs12.proto";
+    option (aelf.csharp_state) = "AetherLink.Contracts.Automation.AutomationContractState";
+    
+    rpc RegisterUpkeep(RegisterUpkeepInput) returns (google.protobuf.Empty) {}
+    rpc DeregisterUpkeep(aelf.Hash) returns (google.protobuf.Empty) {}
+    rpc GetUpkeepInfo(aelf.Hash) returns (UpkeepInfo) { option (aelf.is_view) = true; }
+    
+    // Admin
+    rpc Initialize(InitializeInput) returns (google.protobuf.Empty) {}
+    rpc Pause (google.protobuf.Empty) returns (google.protobuf.Empty) {}
+    rpc Unpause (google.protobuf.Empty) returns (google.protobuf.Empty) {}
+    
+    // Config
+    rpc SetOracleContractAddress (aelf.Address) returns (google.protobuf.Empty) {}
+    rpc SetRequestTypeIndex(google.protobuf.Int32Value) returns (google.protobuf.Empty) {}
+    rpc SetSubscriptionId(google.protobuf.Int32Value) returns (google.protobuf.Empty) {}
+    
+    rpc Report (ReportInput) returns (google.protobuf.Empty) {}
+    rpc DeleteCommitment (aelf.Hash) returns (google.protobuf.Empty) {}
+    
+    // View
+    rpc GetAdmin (google.protobuf.Empty) returns (aelf.Address) { option (aelf.is_view) = true; }
+    rpc IsPaused (google.protobuf.Empty) returns (google.protobuf.BoolValue) { option (aelf.is_view) = true; }
+    rpc GetOracleContractAddress (google.protobuf.Empty) returns (aelf.Address) { option (aelf.is_view) = true; }
+    rpc GetRequestTypeIndex (google.protobuf.Empty) returns (google.protobuf.Int32Value) { option (aelf.is_view) = true; }
+    rpc GetCommitmentHash (aelf.Hash) returns (aelf.Hash) { option (aelf.is_view) = true; }
+}
+
+message InitializeInput {
+    aelf.Address admin = 1;
+    int32 automation_type_index = 2;
+    aelf.Address oracle = 3;
+    int64 subscription_id = 4;
+}
+
+message RegisterUpkeepInput {
+  string name = 1;
+  aelf.Address upkeep_contract = 2;
+  aelf.Address admin_address = 3;
+  TriggerType trigger_type = 4;
+  bytes trigger_data = 5;
+  bytes perform_data = 6;
+}
+
+enum TriggerType {
+    Cron = 0;
+    Log = 1;
+}
+
+message UpkeepRegistered {
+  option (aelf.is_event) = true;
+  string name = 1;
+  aelf.Address upkeep_contract = 2;
+  aelf.Hash upkeep_id = 3;
+  TriggerType trigger_type = 4;
+}
+
+message UpkeepInfo {
+  string name = 1;
+  aelf.Address upkeep_contract = 2;
+  aelf.Address admin_address = 3;
+  TriggerType trigger_type = 4;
+}
+
+message Config {
+  int64 request_timeout_seconds = 1;
+  int64 minimum_request_confirmations = 2;
+  int64 max_request_confirmations = 3;
+  int64 max_num_words = 4;
+}
+
+message RequestTypeIndexSet {
+  option (aelf.is_event) = true;
+  int32 request_type_index = 1;
+}
+
+message SubscriptionIdSet {
+  option (aelf.is_event) = true;
+  int32 subscription_id = 1;
+}
+
+message UpkeepRemoved {
+  option (aelf.is_event) = true;
+  aelf.Hash upkeep_id = 1;
+}
+
+message ReportInput {
+  aelf.Address transmitter = 1;
+  repeated aelf.Hash report_context = 2;
+  bytes report = 3;
+  repeated bytes signatures = 4;
+}
+
+message UpkeepPerformed {
+  option (aelf.is_event) = true;
+  aelf.Hash upkeep_id = 1;
+}
+
+message LogTriggerCheckData {
+  string chain_id = 1;
+  string transaction_id = 2;
+  int64 block_height = 3;
+  string block_hash = 4;
+  string contractAddress = 5;
+  string event_name = 6;
+  int32 index = 7;
+}

@@ -1,0 +1,17 @@
+{
+  "Environment": "nodes",
+  "Type": "",
+  "isApproval": false,
+  "UpdateInfo": {
+    "isSystemContract": false,
+    "ContractName": "",
+    "ContractAddress": ""
+  },
+  "ContractFileName": "",
+  "Salt": "",
+  "AuthorInfo":{
+    "Author": "",
+    "isProxyAddress": false,
+    "Signer" : ""
+  }
+}

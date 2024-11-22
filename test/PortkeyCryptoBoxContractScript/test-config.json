@@ -1,0 +1,27 @@
+{
+  "ServiceUrlList":[
+    "http://127.0.0.1:8000"
+  ],
+  "InitAccount": "36dmYpkgsWsusFU77FLoB5nioqjQVFw395TSf8v8ux5HMP52j",
+  "Password": "12345678",
+  "TransactionInfo": {
+    "GroupDuration": 1000,
+    "TransactionCount": 1,
+    "SenderCount": 10,
+    "TransactionSize": 10,
+    "SentTxLimit": 1000000,
+    "TransactionLimit": 60
+  },
+  "CryptoBoxInfo":{
+    "BoxCount":10,
+    "TransferCryptoCount":10,
+    "TestContractAddress": "2LUmicHyH4RXrMjG4beDwuDsiWJESyLkgkwPdGTR8kahRzq5XS"
+  },
+  "IsProxyAccount": false,
+  "IsNeedDelegatee": false,
+  "IsParallel": false,
+  "InitFeeAmount": 1000000000000,
+  "ProxyAccountContract": "",
+  "TestContractAddress": "2WHXRoLRjbUTDQsuqR5CntygVfnDb125qdJkudev4kVNbLhTdG",
+  "TestDuration": 10
+} 

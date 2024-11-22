@@ -1,0 +1,44 @@
+// the version of the language, use proto3 for contracts
+syntax = "proto3";
+
+import "aelf/core.proto";
+import "aelf/options.proto";
+import "acs12.proto";
+
+option csharp_namespace = "Schrodinger.Contracts.Contract";
+
+service TestContract {
+  option (aelf.base) = "acs12.proto";
+  option (aelf.csharp_state) = "Schrodinger.Contracts.TestContract.TestContractState";
+
+  rpc SetAttributes (SetAttributesInput) returns (google.protobuf.Empty) {}
+
+}
+
+message SetAttributesInput {
+  string tick = 1;
+  AttributeLists attributes = 2;
+}
+
+message AttributeLists {
+  repeated AttributeSet fixed_attributes = 1;
+  repeated AttributeSet random_attributes = 2;
+}
+
+message AttributeSets {
+  repeated AttributeSet data = 1;
+}
+
+message AttributeSet {
+  AttributeInfo trait_type = 1;
+  AttributeInfos values = 2;
+}
+
+message AttributeInfos {
+  repeated AttributeInfo data = 1;
+}
+
+message AttributeInfo {
+  string name = 1;
+  int64 weight = 2;
+}

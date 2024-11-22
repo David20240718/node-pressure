@@ -1,0 +1,140 @@
+// the version of the language, use proto3 for contracts
+syntax = "proto3";
+
+// some core imports for aelf chain types
+import "aelf/core.proto";
+import "aelf/options.proto";
+
+// import for using the google.protobuf.Empty type.
+import "google/protobuf/empty.proto";
+import "google/protobuf/wrappers.proto";
+
+import "acs12.proto";
+import "acs2.proto";
+
+// the name of the C# namespace in which the contract code will be,
+// generated code will also be in this namespace.
+option csharp_namespace = "AElfTest.Contract";
+
+// the contract definition: a gRPC service definition.
+service AElfTestContract {
+  // the full name of the C# class that will contain the state (here <namespace>.<state-class-name> format).
+  option (aelf.csharp_state) = "AElfTest.Contract.AElfTestContractState";
+  option (aelf.base) = "acs12.proto";
+  option (aelf.base) = "acs2.proto";
+  // an action defined as a gRPC service method.
+  // this action take a google.protobuf.Empty (placeholder for void) as input
+  // and returns a custom defined type: HelloReturn.
+  rpc Initialize (InitializeInput) returns (google.protobuf.Empty) {
+  }
+  rpc TestCreate (TestCreateInput) returns (google.protobuf.Empty) {
+  }
+  rpc TestRemove (google.protobuf.StringValue) returns (google.protobuf.Empty) {
+  }
+  rpc TestTransfer (TestTransferInput) returns (google.protobuf.Empty) {
+  }
+  rpc TransferWithoutParallel (TestTransferInput) returns (google.protobuf.Empty) {
+  }
+  rpc AddAccount(aelf.Address) returns (google.protobuf.Empty) {
+  }
+  rpc RemoveAccount(aelf.Address) returns (google.protobuf.Empty) {
+  }
+  rpc SetLongKeyValue(LongKeyInput) returns (google.protobuf.Empty) {
+  }
+
+  rpc GetTestTokenInfo (GetTestTokenInfoInput) returns (TestTokenInfo) {
+    option (aelf.is_view) = true;
+  }
+  rpc GetTestBalance (GetTestBalanceInput) returns (TestBalance) {
+    option (aelf.is_view) = true;
+  }
+  rpc GetAccountList (google.protobuf.Empty) returns (AccountList) {
+    option (aelf.is_view) = true;
+  }
+  rpc GetLongKey (google.protobuf.StringValue) returns (google.protobuf.Int64Value) {
+    option (aelf.is_view) = true;
+  }
+}
+
+message InitializeInput {
+  aelf.Address owner = 1;
+}
+
+message TestCreateInput {
+  string symbol = 1;
+  int64 total_supply = 2;
+}
+
+message TestTransferInput {
+  aelf.Address to = 1;
+  string symbol = 2;
+  int64 amount = 3;
+  bytes memo = 4;
+}
+
+message LongKeyInput {
+  string key = 1;
+  int64 length = 2;
+}
+
+message GetTestTokenInfoInput {
+  string symbol = 1;
+}
+
+message GetTestBalanceInput {
+  string symbol = 1;
+  aelf.Address owner = 2;
+}
+
+message TestTokenInfo {
+  string symbol = 1;
+  int64 total_supply = 2;
+  aelf.Address issuer = 3;
+}
+
+message TestBalance {
+  string symbol = 1;
+  aelf.Address owner = 2;
+  int64 amount = 3;
+}
+
+message AccountList {
+  repeated aelf.Address account = 1;
+}
+
+message TestTransferred {
+  option (aelf.is_event) = true;
+  aelf.Address from = 1 [(aelf.is_indexed) = true];
+  aelf.Address to = 2 [(aelf.is_indexed) = true];
+  string symbol = 3 [(aelf.is_indexed) = true];
+  int64 amount = 4;
+  bytes memo = 5;
+}
+
+message TestTokenCreated {
+  option (aelf.is_event) = true;
+  string symbol = 1;
+  int64 total_supply = 2;
+}
+
+message TestTokenRemoved {
+  option (aelf.is_event) = true;
+  string symbol = 1;
+}
+
+
+message AccountAdded{
+  option (aelf.is_event) = true;
+  aelf.Address account = 1;
+}
+
+message AccountRemoved{
+  option (aelf.is_event) = true;
+  aelf.Address account = 1;
+}
+
+
+
+
+
+

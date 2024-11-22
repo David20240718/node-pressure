@@ -1,0 +1,135 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <IsPackable>true</IsPackable>
+        <LangVersion>latest</LangVersion>
+        <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Folder Include="Contracts\Serializer" />
+      <Folder Include="DtoExtension" />
+      <Folder Include="Helpers" />
+      <Folder Include="Managers\KeyAccount" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProtoContract Include="Protobuf\Proto\acs0.proto" />
+        <ProtoContract Include="Protobuf\Proto\acs1.proto" />
+        <ProtoContract Include="Protobuf\Proto\acs2.proto" />
+        <ProtoContract Include="Protobuf\Proto\acs3.proto" />
+        <ProtoContract Include="Protobuf\Proto\acs4.proto" />
+        <ProtoContract Include="Protobuf\Proto\acs5.proto" />
+        <ProtoContract Include="Protobuf\Proto\acs6.proto" />
+        <ProtoContract Include="Protobuf\Proto\acs7.proto" />
+        <ProtoContract Include="Protobuf\Proto\acs8.proto" />
+        <ProtoContract Include="Protobuf\Proto\acs9.proto" />
+        <ProtoContract Include="Protobuf\Proto\acs10.proto" />
+        <ProtoContract Include="Protobuf\Proto\acs11.proto" />
+        <ProtoContract Include="Protobuf\Proto\acs12.proto" />
+        <ProtoContract Include="Protobuf\Proto\acs13.proto" />
+        <ProtoMessage Include="Protobuf\Proto\authority_info.proto" />
+        <ProtoMessage Include="Protobuf\Proto\code_check.proto" />
+        <ProtoMessage Include="Protobuf\Proto\transaction_fee.proto" />
+        <ProtoContract Include="Protobuf\Proto\acs5_plugin_test_contract.proto" />
+        <ProtoContract Include="Protobuf\Proto\acs8_plugin_test_contract.proto" />
+        <ProtoContract Include="Protobuf\Proto\callback_input.proto" />
+        <ProtoContract Include="Protobuf\Proto\basic_contract_zero.proto" />
+        <ProtoContract Include="Protobuf\Proto\basic_contract_zero_impl.proto" />
+        <ProtoContract Include="Protobuf\Proto\test_transaction_fees_contract.proto" />
+        <ProtoContract Include="Protobuf\Proto\token_contract.proto" />
+        <ProtoContract Include="Protobuf\Proto\token_contract_impl.proto" />
+        <ProtoContract Include="Protobuf\Proto\token_holder_contract.proto" />
+        <ProtoContract Include="Protobuf\Proto\token_holder_contract_impl.proto" />
+        <ProtoContract Include="Protobuf\Proto\treasury_contract.proto" />
+        <ProtoContract Include="Protobuf\Proto\treasury_contract_impl.proto" />
+        <ProtoContract Include="Protobuf\Proto\election_contract.proto" />
+        <ProtoContract Include="Protobuf\Proto\election_contract_impl.proto" />
+        <ProtoContract Include="Protobuf\Proto\profit_contract.proto" />
+        <ProtoContract Include="Protobuf\Proto\profit_contract_impl.proto" />
+        <ProtoContract Include="Protobuf\Proto\aedpos_contract.proto" />
+        <ProtoContract Include="Protobuf\Proto\aedpos_contract_impl.proto" />
+        <ProtoContract Include="Protobuf\Proto\parliament_contract.proto" />
+        <ProtoContract Include="Protobuf\Proto\parliament_contract_impl.proto" />
+        <ProtoContract Include="Protobuf\Proto\association_contract.proto" />
+        <ProtoContract Include="Protobuf\Proto\association_contract_impl.proto" />
+        <ProtoContract Include="Protobuf\Proto\vote_contract.proto" />
+        <ProtoContract Include="Protobuf\Proto\vote_contract_impl.proto" />
+        <ProtoContract Include="Protobuf\Proto\token_converter_contract.proto" />
+        <ProtoContract Include="Protobuf\Proto\token_converter_contract_impl.proto" />
+        <ProtoContract Include="Protobuf\Proto\cross_chain_contract.proto" />
+        <ProtoContract Include="Protobuf\Proto\cross_chain_contract_impl.proto" />
+        <ProtoContract Include="Protobuf\Proto\configuration_contract.proto" />
+        <ProtoContract Include="Protobuf\Proto\configuration_contract_impl.proto" />
+        <ProtoContract Include="Protobuf\Proto\referendum_contract.proto" />
+        <ProtoContract Include="Protobuf\Proto\referendum_contract_impl.proto" />
+        <ProtoContract Include="Protobuf\Proto\economic_contract.proto" />
+        <ProtoContract Include="Protobuf\Proto\economic_contract_impl.proto" />
+        <ProtoContract Include="Protobuf\Proto\referendum_contract_impl.proto" />
+        <ProtoContract Include="Protobuf\Proto\execution.proto" />
+        <ProtoContract Include="Protobuf\Proto\random_number_provider_contract.proto" />
+        <ProtoContract Include="Protobuf\Proto\nft_contract.proto" />
+        <ProtoContract Include="Protobuf\Proto\forest_contract.proto" />
+        <ProtoContract Include="Protobuf\Proto\proxy_account_contract.proto" />
+        <ProtoContract Include="Protobuf\Proto\token_adapter_contract.proto" />
+        <ProtoContract Include="Protobuf\Proto\whitelist_contract.proto" />
+        <ProtoContract Include="Protobuf\Proto\ca_contract.proto" />
+        <ProtoContract Include="Protobuf\Proto\ca_contract_impl.proto" />
+        <ProtoContract Include="Protobuf\Proto\test_basic_function_contract.proto" />
+        <ProtoContract Include="Protobuf\Proto\agent_interface_contract.proto " />
+        <ProtoContract Include="Protobuf\Proto\receipt_maker.proto" />
+        <ProtoContract Include="Protobuf\Proto\bridge_contract.proto " />
+        <ProtoContract Include="Protobuf\Proto\timelock_contract.proto" />
+        <ProtoContract Include="Protobuf\Proto\report_contract.proto" />
+        <ProtoContract Include="Protobuf\Proto\virtual_transaction.proto" />
+        <ProtoContract Include="Protobuf\Proto\virtual_transaction_event_test.proto" />
+        <ProtoContract Include="Protobuf\Proto\beango_town_contract.proto" />
+        <ProtoContract Include="Protobuf\Proto\aelf_test_contract.proto" />
+        <ProtoContract Include="Protobuf\Proto\test_contract_for_plugin.proto" />
+        <ProtoContract Include="Protobuf\Proto\auction_contract.proto" />
+        <ProtoContract Include="Protobuf\Proto\symbol_registrar_contract.proto" />
+        <ProtoContract Include="Protobuf\Proto\inscription_contract.proto" />
+        <ProtoContract Include="Protobuf\Proto\test_contract.proto" />
+        <ProtoContract Include="Protobuf\Proto\bridge_contract_impl.proto" />
+        <ProtoContract Include="Protobuf\Proto\points_contract.proto" />
+        <ProtoContract Include="Protobuf\Proto\schrodinger_contract.proto" />
+        <ProtoContract Include="Protobuf\Proto\crypto_box_contract.proto" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <!--AElf packages-->
+        <PackageReference Include="AElf.Kernel.Types" Version="1.5.0" />
+        <PackageReference Include="AElf.Types" Version="1.5.0" />
+        <PackageReference Include="AElf.CSharp.Core" Version="1.5.0" />
+        <PackageReference Include="AElf.Cryptography" Version="1.5.0" />
+        <PackageReference Include="AElf.Client" Version="1.1.0" />
+        <PackageReference Include="Google.Protobuf" Version="3.19.4" />
+        <!--end packages-->
+
+        <PackageReference Include="Volo.Abp.Core" Version="6.0.2" />
+        <PackageReference Include="Nethereum.KeyStore" Version="4.6.0" />
+        <PackageReference Include="Mono.Cecil" Version="0.11.0" />
+        <PackageReference Include="apache.log4net.Extensions.Logging" Version="2.0.0.12" />
+        <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+        <PackageReference Include="Shouldly" Version="3.0.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Update="config\*">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\AElfChain.Contract\AElfChain.Contract.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="AElf.Types, PublicKeyToken=null">
+        <HintPath>..\..\..\..\..\.nuget\packages\aelf.types\1.5.0\lib\net6.0\AElf.Types.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
+</Project>

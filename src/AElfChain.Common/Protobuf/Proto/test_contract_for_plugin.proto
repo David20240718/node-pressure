@@ -1,0 +1,144 @@
+// the version of the language, use proto3 for contracts
+syntax = "proto3";
+
+// some core imports for aelf chain types
+import "aelf/core.proto";
+import "aelf/options.proto";
+import "acs12.proto";
+
+// import for using the google.protobuf.Empty type.
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+// the name of the C# namespace in which the contract code will be,
+// generated code will also be in this namespace.
+option csharp_namespace = "AElf.Contracts.TestContractForPluginContract";
+
+// the contract definition: a gRPC service definition.
+service TestContractForPluginContract {
+
+  // the full name of the C# class that will contain the state (here <namespace>.<state-class-name> format).
+  option (aelf.csharp_state) = "AElf.Contracts.TestContractForPluginContract.TestContractForPluginContractState";
+  option (aelf.base) = "acs12.proto";
+
+  // an action defined as a gRPC service method.
+  // this action take a google.protobuf.Empty (placeholder for void) as input
+  // and returns a custom defined type: HelloReturn.
+  rpc Initialize (google.protobuf.Empty) returns (google.protobuf.Empty) {
+  }
+
+  rpc SetValue(SetValueInput) returns(google.protobuf.Empty) {
+  }
+  rpc RemoveValue(RemoveValueInput) returns(google.protobuf.Empty) {
+  }
+  rpc SetNumber(SetNumberInput) returns(google.protobuf.Empty) {
+  }
+  rpc SetEntityLimit(SetEntityLimitInput) returns(google.protobuf.Empty) {
+  }
+  rpc SetEntitySize(google.protobuf.Int64Value) returns(google.protobuf.Empty) {
+  }
+  rpc SetLogLimit(google.protobuf.Int64Value) returns(google.protobuf.Empty) {
+  }
+  rpc SetLogSize(google.protobuf.Int64Value) returns(google.protobuf.Empty) {
+  }
+  rpc ExecutedContractLimit(google.protobuf.Int64Value) returns(google.protobuf.Empty) {
+  }
+
+  // Views
+  // Define methods name and input/output. Need to add "is_view=true" attribute.
+  rpc GetValue (google.protobuf.StringValue) returns (ValueOutput) {
+    option (aelf.is_view) = true;
+  }
+
+  rpc GetNumber (google.protobuf.StringValue) returns (google.protobuf.Int64Value) {
+    option (aelf.is_view) = true;
+  }
+  rpc GetIntOutput (google.protobuf.Empty) returns (ValueIntOutput) {
+    option (aelf.is_view) = true;
+  }
+  rpc GetExecutedLimit (google.protobuf.Empty) returns (google.protobuf.Empty) {
+    option (aelf.is_view) = true;
+  }
+}
+
+message SetValueInput{
+  string key = 1;
+  string value = 2;
+}
+
+message RemoveValueInput{
+  string key = 1;
+}
+
+message SetEntityLimitInput{
+  string type = 1;
+  int64 limit = 2;
+}
+
+
+//
+message SetNumberInput{
+  string key = 1;
+  int64 value = 2;
+}
+
+
+message ValueOutput{
+  string value = 1;
+}
+
+message ValueIntOutput{
+  int64 value_1 = 1;
+  int64 value_2 = 2;
+}
+
+//Event
+message SetValue{
+  option (aelf.is_event) = true;
+  string key = 1;
+  string value = 2;
+}
+
+message RemovedValue {
+  option (aelf.is_event) = true;
+  string key = 1;
+  string value = 2;
+}
+
+message SetNumber {
+  option (aelf.is_event) = true;
+  string key = 1;
+  int64 value = 2;
+}
+
+message Numbered {
+  option (aelf.is_event) = true;
+  int64 value = 2;
+}
+
+message SetEntityLimit {
+  option (aelf.is_event) = true;
+  string type = 1;
+  int64 entity_limit = 2;
+}
+
+message SetEntitySize {
+  option (aelf.is_event) = true;
+  int64 entity_size = 1;
+}
+
+message SetLogLimit {
+  option (aelf.is_event) = true;
+  int64 log_limit = 1;
+}
+
+message SetLogSize {
+  option (aelf.is_event) = true;
+  int64 log_size = 1;
+}
+
+message ExecutedLimit {
+  option (aelf.is_event) = true;
+  int64 execute_limit = 1;
+}

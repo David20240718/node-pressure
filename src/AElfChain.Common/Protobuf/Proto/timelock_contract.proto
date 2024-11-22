@@ -1,0 +1,94 @@
+syntax = "proto3";
+
+import "aelf/core.proto";
+import "aelf/options.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "AElf.Contracts.Timelock";
+
+service TimelockContract {
+  option (aelf.csharp_state) = "AElf.Contracts.Timelock.TimelockContractState";
+
+  // Actions
+  rpc Initialize (InitializeInput) returns (google.protobuf.Empty) {
+  }
+  rpc SetDelay (SetDelayInput) returns (google.protobuf.Empty) {
+  }
+  rpc ChangeAdmin (ChangeAdminInput) returns (google.protobuf.Empty) {
+  }
+  rpc QueueTransaction (TransactionInput) returns (aelf.Hash) {
+  }
+  rpc ExecuteTransaction (TransactionInput) returns (google.protobuf.Empty) {
+  }
+  rpc CancelTransaction (TransactionInput) returns (google.protobuf.Empty) {
+  }
+
+  // View
+  rpc GetDelay (google.protobuf.Empty) returns (google.protobuf.UInt64Value) {
+    option (aelf.is_view) = true;
+  }
+  rpc GetAdmin (google.protobuf.Empty) returns (aelf.Address) {
+    option (aelf.is_view) = true;
+  }
+  rpc GetTransaction(aelf.Hash) returns (google.protobuf.BoolValue) {
+    option (aelf.is_view) = true;
+  }
+}
+
+// Params
+message InitializeInput {
+  uint64 delay = 1;
+}
+
+message SetDelayInput {
+  uint64 delay = 1;
+}
+
+message ChangeAdminInput {
+  aelf.Address admin = 1;
+}
+
+message TransactionInput {
+  aelf.Hash txn_hash = 1;
+  aelf.Address target = 2;
+  string method = 3;
+  bytes data = 4;
+  google.protobuf.Timestamp execute_time = 5;
+}
+
+// Events
+message NewAdmin {
+  option (aelf.is_event) = true;
+  aelf.Address admin = 1;
+}
+
+message NewDelay {
+  option (aelf.is_event) = true;
+  uint64 delay = 1;
+}
+
+message QueueTransaction {
+  option (aelf.is_event) = true;
+  aelf.Address target = 1;
+  string method = 2;
+  bytes data = 3; // data equivalent to ConvertToByteString(IMessage)
+  google.protobuf.Timestamp execute_time = 4;
+}
+
+message ExecuteTransaction {
+  option (aelf.is_event) = true;
+  aelf.Address target = 1;
+  string method = 2;
+  bytes data = 3;
+  google.protobuf.Timestamp execute_time = 4;
+}
+
+message CancelTransaction {
+  option (aelf.is_event) = true;
+  aelf.Address target = 1;
+  string method = 2;
+  bytes data = 3;
+  google.protobuf.Timestamp execute_time = 4;
+}
