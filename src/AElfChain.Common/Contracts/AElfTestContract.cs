@@ -14,7 +14,8 @@ public enum TestMethod
     GetTestBalance,
     GetTestTokenInfo,
     SetLongKeyValue,
-    GetLongKey
+    GetLongKey,
+    Transfer,
 }
 
 public class AElfTestContract : BaseContract<TestMethod>

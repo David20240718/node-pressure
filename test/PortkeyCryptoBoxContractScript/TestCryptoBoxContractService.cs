@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.Text.Json;
 using AElf;
 using AElf.Cryptography;
 using AElf.CSharp.Core;
@@ -35,12 +36,35 @@ public class TestCryptoBoxContractService : IContractService
         _transferCryptoCount = transferCryptoCount;
         _boxIdList = new List<string>();
     }
+    
+    public TestCryptoBoxContractService(Service service, ILog logger, string testContract,
+        List<string> fromAccountList, string defaultAddress,List<string> toAccountList,AElfKeyStore keyStore,int boxCount,int transferCryptoCount,List<String> boxIdList)
+    {
+        _service = service;
+        _nodeManager = service.NodeManager;
+        _logger = logger;
+        _fromAccountList = fromAccountList;
+        _toAccountList = toAccountList;
+        _testCryptoBoxContract = testContract == ""
+            ? new CryptoBoxContract(_nodeManager, service.CallAddress, "", false)
+            : new CryptoBoxContract(_nodeManager, service.CallAddress, testContract);
+        _keyStore = keyStore;
+        _defaultAddress = defaultAddress;
+        _boxCount = boxCount;
+        _transferCryptoCount = transferCryptoCount;
+        _boxIdList = boxIdList;
+    }
+
+    public void InitializeContract()
+    {
+        throw new NotImplementedException();
+    }
 
     public IContractService UpdateService(Service service)
     {
         _logger.Info($"Update url to {service.NodeManager.GetApiUrl()}");
-        return new TestContractService(service, _logger, _testCryptoBoxContract.ContractAddress,
-            _fromAccountList, _toAccountList);
+        return new TestCryptoBoxContractService(service, _logger, _testCryptoBoxContract.ContractAddress,
+            _fromAccountList, _defaultAddress,_toAccountList,_keyStore,_boxCount,_transferCryptoCount,_boxIdList);
     }
 
     public List<string>? CreateToken(int group)
@@ -106,17 +130,22 @@ public class TestCryptoBoxContractService : IContractService
         var stopwatch = new Stopwatch();
         stopwatch.Start();
         var transactionList = new List<string>();
-
         var createTxsTime = stopwatch.ElapsedMilliseconds;
     
         //Send batch transaction requests
         stopwatch.Restart();
-        for (int i = 0; i < _boxIdList.Count; i++)
+        Parallel.For(0, _boxIdList.Count, new ParallelOptions { MaxDegreeOfParallelism = 20 },i =>
         {
             string id = _boxIdList[i];
-            SendTransferCryptoBoxesSendOneTransaction(id,symbol,size,method);
+            string transaction = SendTransferCryptoBoxesSendOneTransaction(id, symbol, size, method);
 
-        }
+            // Add the transaction to the thread-safe transactionList
+            transactionList.Add(transaction);
+        });
+        
+        var finalTransactionList = transactionList.ToList();
+
+        
         stopwatch.Stop();
        
         var requestTxsTime = stopwatch.ElapsedMilliseconds;
@@ -129,12 +158,15 @@ public class TestCryptoBoxContractService : IContractService
         //                  $"referenceHash: {referenceInfos[j].referenceBlockHash}");
         // }
         _logger.Info(
-            $"Thread request transactions: " +
+            $"Portkey Thread request transactions: " +
             $"{tester.Count}, create time: {createTxsTime}ms, request time: {requestTxsTime}ms.");
     
     
-        _logger.Info($"Transaction Count: {transactionList.Count}");
-        return transactionList;
+        _logger.Info($"Portkey Transaction Count: {transactionList.Count}");
+        
+        
+        
+        return finalTransactionList;
     }
 
     public Task SendMultiTransactionsOneBytOneTasks(string symbol, long size, List<string> tester, string method)
@@ -151,7 +183,7 @@ public class TestCryptoBoxContractService : IContractService
         return Task.CompletedTask;
     }
 
-    private void SendTransferCryptoBoxesSendOneTransaction(string id ,string symbol, long size, string method)
+    private String SendTransferCryptoBoxesSendOneTransaction(string id ,string symbol, long size, string method)
     {
         var stopwatch = new Stopwatch();
         stopwatch.Start();
@@ -160,13 +192,7 @@ public class TestCryptoBoxContractService : IContractService
         var privateKey = kp.PrivateKey.ToHex();
         
 
-        var signatureStr =
-            $"{id}-{_defaultAddress.ConvertAddress()}-{10}";
-
-        var byteArray = HashHelper.ComputeFrom(signatureStr).ToByteArray();
-        var receiveSignature =
-            CryptoHelper.SignWithPrivateKey(ByteArrayHelper.HexStringToByteArray(privateKey), byteArray)
-                .ToHex();
+       
 
         var list = new List<TransferCryptoBoxInput>();
         
@@ -175,7 +201,16 @@ public class TestCryptoBoxContractService : IContractService
         {
             
             var (from, to) = GetTransferPair(i);
+            
+            var signatureStr =
+                $"{id}-{to.ConvertAddress()}-{10}";
+            
+            var keyPair = _keyStore.GetAccountKeyPair(to);
 
+            var byteArray = HashHelper.ComputeFrom(signatureStr).ToByteArray();
+            var receiveSignature =
+                CryptoHelper.SignWithPrivateKey(ByteArrayHelper.HexStringToByteArray(privateKey), byteArray)
+                    .ToHex();
             
             list.Add( new TransferCryptoBoxInput
             {
@@ -201,61 +236,96 @@ public class TestCryptoBoxContractService : IContractService
         var sendTime = DateTime.Now;
         var requestTxsTime = stopwatch.ElapsedMilliseconds;
         _logger.Info(
-            $"{symbol} request one transactions: " +
+            $" {symbol} request one CryptoBoxes Transaction: " +
             $"request time: {requestTxsTime}ms.");
         _logger.Info($"{transaction} send to txhub time: {sendTime} " +
                      $"referenceBlock: {referenceInfo.referenceBlockHeight}, " +
                      $"referenceHash: {referenceInfo.referenceBlockHash}");
+        return transaction;
     }
 
-    public void InitializeContract()
+    public void InitializeContract(String TokenAddress)
     {
-
+        _logger.Info($"InitializeContract:{TokenAddress}");
         _testCryptoBoxContract.ExecuteMethodWithResult(TestMethod.Initialize, new InitializeInput
         {
             // Admin = DefaultAddress,
             Admin = _defaultAddress.ConvertAddress(),
-            MaxCount = 1000
+            TokenAddress = TokenAddress,
+            MaxCount = 10000000
         });
 
     }
     
-    public String CreateCryptoBox(string symbol)
+    public String CreateCryptoBox(string symbol, out string txid)
     {
         
+        _logger.Info($"CreateCryptoBox:{symbol}");
+
         var id = Guid.NewGuid().ToString().Replace("-", "");
 
         var timeSeconds = DateTimeOffset.UtcNow.ToUnixTimeSeconds() * 1000;
         
         var kp = _keyStore.GetAccountKeyPair(_defaultAddress);
+        
+        
 
-
-        _testCryptoBoxContract.ExecuteMethodWithResult(TestMethod.CreateCryptoBox, new CreateCryptoBoxInput
+        txid = _testCryptoBoxContract.ExecuteMethodWithTxId(TestMethod.CreateCryptoBox, new CreateCryptoBoxInput
         {
             CryptoBoxSymbol = symbol,
-            TotalAmount = 1000,
-            TotalCount = 10,
+            TotalAmount = 1000000,
+            TotalCount = 100000,
             MinAmount = 10,
             Sender = _defaultAddress.ConvertAddress(),
             PublicKey = kp.PublicKey.ToHex(),
             CryptoBoxType = CryptoBoxType.QuickTransfer,
-            ExpirationTime = timeSeconds + 1000,
-            CryptoBoxId = id
+            ExpirationTime = timeSeconds + 3600*1000,
+            CryptoBoxId = id,
         });
+        
+        _logger.Info($"CreateCryptoBox: from address {_defaultAddress}");
+
+        
+        _logger.Info($"CreateCryptoBox:{symbol} end, id:{id}");
+
 
         return id;
     }
 
     public void InitTestContractTest(List<String> symbolList)
     {
+        
+
         foreach (var symbol in symbolList)
         {
-            for (int i = 0; i < _boxCount; i++)
+            var txIds = new ConcurrentQueue<string>();
+            ConcurrentBag<string> boxIdList = new ConcurrentBag<string>(); 
+
+            
+            Parallel.ForEach(Enumerable.Range(0, _boxCount), i =>
             {
-                string id = CreateCryptoBox(symbol);
-                _boxIdList.Add(id);
-            }
+                string id = CreateCryptoBox(symbol,out string txid);
+                boxIdList.Add(id);
+                txIds.Enqueue(txid);
+            });
+            _boxIdList = boxIdList.ToList();
+            
+            _logger.Info($"Check CreateCryptoBox status: ");
+            Parallel.ForEach(txIds, txId => { _nodeManager.CheckTransactionResult(txId); });
+            _logger.Info($"Check CreateCryptoBox status: end");
+            
+            Parallel.ForEach(_boxIdList, id =>
+            {
+                var cryptoBoxInfo = _testCryptoBoxContract.ExecuteMethodWithResult("GetCryptoBoxInfo", new GetCryptoBoxInput()
+                {
+                    CryptoBoxId = id
+                });
+                var cryptoBoxInfoJson = JsonSerializer.Serialize(cryptoBoxInfo, new JsonSerializerOptions { WriteIndented = true });
+                _logger.Info($"CryptoBoxId: {id}  CreateCryptoBox Details: {cryptoBoxInfoJson}");
+
+            });
         }
+        
     }
     
     public List<string> CreateProxyMethodTest(List<ProxyService.ProxyAccountInfo> proxyAccountInfos,
@@ -297,7 +367,7 @@ public class TestCryptoBoxContractService : IContractService
     private List<string> _toAccountList;
     private readonly AElfKeyStore _keyStore;
     
-    private String _defaultAddress;
+    private readonly String _defaultAddress;
     
     private List<string> _boxIdList;
 

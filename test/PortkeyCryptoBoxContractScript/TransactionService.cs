@@ -100,7 +100,7 @@ public class TransactionService
         _logger.Info("Begin generate multi requests.");
         try
         {
-            for (var r = 1; r > 0; r++) //continuous running
+            for (var r = 1; r < 2 ; r++) //continuous running
             {
                 if (token.IsCancellationRequested)
                 {
@@ -151,15 +151,15 @@ public class TransactionService
     private void GeneratedTransaction(CancellationTokenSource cts,
         CancellationToken token, IContractService contractService,string method, bool isNeedResult)
     {
-        _logger.Info("Begin generate multi requests.");
+        _logger.Info("Portkey Begin generate multi requests.");
         try
         {
-            for (var r = 1;  r > 0; r++) //continuous running
+            for (var r = 1;  r < 2; r++) //continuous running
             {
                 if (token.IsCancellationRequested)
                 {
                     var endTIme = DateTime.UtcNow;
-                    _logger.Info($"End execution transaction request round, total round:{r - 1}, end time: {endTIme}");
+                    _logger.Info($"Portkey End execution transaction request round, total round:{r - 1}, end time: {endTIme}");
                     break;
                 }
 
@@ -167,7 +167,7 @@ public class TransactionService
                 var stopwatch = Stopwatch.StartNew();
                 try
                 {
-                    _logger.Info($"Execution transaction request round: {r}");
+                    _logger.Info($"Portkey Execution transaction request round: {r}");
                     //multi task for SendTransactions query
                     for (var i = 0; i < _symbols.Count; i++)
                     {

@@ -66,7 +66,7 @@ public class TestContractService : IContractService
         {
             var txIds = new ConcurrentQueue<string>();
             _logger.Info($"Initialize symbol {symbol} to testers ...");
-            var amount = _testContract.GetTestTokenInfo(symbol).TotalSupply.Div(_fromAccountList.Count);
+            var amount = _testContract.GetTestTokenInfo(symbol).TotalSupply.Div(_fromAccountList.Count*2);
 
             Parallel.ForEach(_fromAccountList, account =>
             {
@@ -77,6 +77,14 @@ public class TestContractService : IContractService
                     To = Address.FromBase58(account)
                 });
                 txIds.Enqueue(txId);
+                
+                // var txIdToken = _testContract.ExecuteMethodWithTxId(TestMethod.Transfer, new TransferInput
+                // {
+                //     Symbol = symbol,
+                //     Amount = amount,
+                //     To = Address.FromBase58(account)
+                // });
+                // txIds.Enqueue(txIdToken);
             });
 
             Parallel.ForEach(txIds, txId => { _nodeManager.CheckTransactionResult(txId); });

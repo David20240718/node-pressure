@@ -57,11 +57,12 @@ internal class Program
             var symbols = testTokenService.InitTestContractTest(Constants.DefaultTokenCount, eoaTestAccount);
             
             var TestCryptoBoxContract = new TestCryptoBoxContractService(serviceList.First(), Logger, cryptoBoxInfoTestContractAddress, 
-                eoaTestAccount, config.InitAccount,toAccountList,AElfKeyStore.GetKeyStore(""),boxCount,transferCryptoCount);
+                eoaTestAccount, eoaTestAccount[0],toAccountList,AElfKeyStore.GetKeyStore(""),boxCount,transferCryptoCount);
 
-            symbols.Clear();
-            symbols.Add("ELF");
-            // TestCryptoBoxContract.InitializeContract();
+            // symbols.Clear();
+            // symbols.Add("ELF");
+            
+            TestCryptoBoxContract.InitializeContract(config.TestContractAddress);
             TestCryptoBoxContract.InitTestContractTest(symbols);
 
             
