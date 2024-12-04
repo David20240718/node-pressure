@@ -74,7 +74,7 @@ public class TransactionService
             return Task.Run(
                 () => GeneratedTransaction(txCts, txToken, _contractService.UpdateService(i), method,false), txToken);
         });
-
+        _logger.Info("Task.Run END");
         Task.WaitAll(taskList.ToArray());
         _logger.Info("END");
     }
@@ -154,12 +154,13 @@ public class TransactionService
         _logger.Info("Portkey Begin generate multi requests.");
         try
         {
-            for (var r = 1;  r < 2; r++) //continuous running
+            for (var r = 1; r < 2; r++) //continuous running
             {
                 if (token.IsCancellationRequested)
                 {
                     var endTIme = DateTime.UtcNow;
-                    _logger.Info($"Portkey End execution transaction request round, total round:{r - 1}, end time: {endTIme}");
+                    _logger.Info(
+                        $"Portkey End execution transaction request round, total round:{r - 1}, end time: {endTIme}");
                     break;
                 }
 
@@ -175,7 +176,8 @@ public class TransactionService
                         var r1 = r;
                         Task.Run(() =>
                         {
-                            var list = ExecuteBatchTransactionTask(contractService, _symbols[i1], r1, method, isNeedResult, out var dateTime);
+                            var list = ExecuteBatchTransactionTask(contractService, _symbols[i1], r1, method,
+                                isNeedResult, out var dateTime);
                             if (!isNeedResult) return;
                             if (list == new List<string>()) return;
                             QueueTransaction.TryAdd(dateTime, list);
@@ -184,7 +186,7 @@ public class TransactionService
                         }, token);
                     }
 
-                    Thread.Sleep(500);
+                    Thread.Sleep(5000);
                 }
                 catch (AggregateException exception)
                 {
@@ -211,6 +213,11 @@ public class TransactionService
             _logger.Error(e.Message);
             _logger.Error("Cancel all tasks due to transaction execution exception.");
             cts.Cancel(); //cancel all tasks
+        }
+        finally
+        {
+            _logger.Info("generate multi requests end. ");
+
         }
     }
 

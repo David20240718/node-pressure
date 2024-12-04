@@ -134,17 +134,22 @@ public class TestCryptoBoxContractService : IContractService
     
         //Send batch transaction requests
         stopwatch.Restart();
+        _logger.Info($"Portkey _boxIdList.count:{_boxIdList.Count}");
         Parallel.For(0, _boxIdList.Count, new ParallelOptions { MaxDegreeOfParallelism = 20 },i =>
         {
             string id = _boxIdList[i];
+            _logger.Info(
+                $"Portkey Thread request transactions Parallel : " +
+                $"{tester.Count}, id :{id}, index:{i}");
             string transaction = SendTransferCryptoBoxesSendOneTransaction(id, symbol, size, method);
-
+           
             // Add the transaction to the thread-safe transactionList
             transactionList.Add(transaction);
         });
         
         var finalTransactionList = transactionList.ToList();
-
+        _logger.Info(
+            $"Portkey Thread request transactions Parallel : " + $"finalTransactionList count:{finalTransactionList.Count}");
         
         stopwatch.Stop();
        
